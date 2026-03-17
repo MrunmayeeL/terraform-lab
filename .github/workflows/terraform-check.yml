@@ -29,5 +29,5 @@ jobs:
         working-directory: ${{ matrix.folder }}
 
       - name: Terraform Plan
-        run: terraform plan -input=false -var-file="dev.tfvars"
+        run: terraform plan
         working-directory: ${{ matrix.folder }}
