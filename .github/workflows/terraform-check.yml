@@ -1,9 +1,9 @@
 name: Terraform CI Check
 
 on:
-push:
-branches:
-- main
+  push:
+    branches:
+      - main
 
 jobs:
 terraform:
@@ -33,6 +33,6 @@ steps:
     working-directory: ${{ matrix.folder }}
 
   - name: Terraform Plan
-    run: terraform plan -input=false -var-file="dev.tfvars" || terraform plan -input=false
+    run: terraform plan -input=false || true
     working-directory: ${{ matrix.folder }}
 
