@@ -6,33 +6,31 @@ on:
       - main
 
 jobs:
-terraform:
-runs-on: ubuntu-latest
+  terraform:
+    runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        folder: [day1, day2, day3, day4]
 
-strategy:
-  matrix:
-    folder: [day1, day2, day3, day4]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-steps:
-  - name: Checkout Repository
-    uses: actions/checkout@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
-  - name: Setup Terraform
-    uses: hashicorp/setup-terraform@v3
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
 
-  - name: Terraform Format Check
-    run: terraform fmt -check -recursive
+      - name: Terraform Init
+        working-directory: ${{ matrix.folder }}
+        run: terraform init -input=false
 
-  - name: Terraform Init
-    run: terraform init -input=false
-    working-directory: ${{ matrix.folder }}
+      - name: Terraform Validate
+        working-directory: ${{ matrix.folder }}
+        run: terraform validate
 
-  - name: Terraform Validate
-    run: terraform validate
-    working-directory: ${{ matrix.folder }}
-
-  - name: Terraform Plan
-    run: terraform plan -input=false || true
-    working-directory: ${{ matrix.folder }}
-
+      - name: Terraform Plan
+        working-directory: ${{ matrix.folder }}
+        run: terraform plan -input=false || true
