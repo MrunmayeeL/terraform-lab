@@ -29,5 +29,10 @@ jobs:
         working-directory: ${{ matrix.folder }}
 
       - name: Terraform Plan
-        run: terraform plan
+        run: |
+          if [ "${{ matrix.folder }}" = "day2" ]; then
+            terraform plan -var-file="dev.tfvars"
+          else
+            terraform plan
+          fi
         working-directory: ${{ matrix.folder }}
