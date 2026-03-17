@@ -1,33 +1,38 @@
 name: Terraform CI Check
 
 on:
-  push:
-    branches:
-      - main
+push:
+branches:
+- main
 
 jobs:
-  terraform:
-    runs-on: ubuntu-latest
+terraform:
+runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        folder: [day1, day2, day3, day4]
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+strategy:
+  matrix:
+    folder: [day1, day2, day3, day4]
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+steps:
+  - name: Checkout Repository
+    uses: actions/checkout@v3
 
-      - name: Terraform Init
-        run: terraform init
-        working-directory: ${{ matrix.folder }}
+  - name: Setup Terraform
+    uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform Validate
-        run: terraform validate
-        working-directory: ${{ matrix.folder }}
+  - name: Terraform Format Check
+    run: terraform fmt -check -recursive
 
-      - name: Terraform Plan
-        run: terraform plan
-        working-directory: ${{ matrix.folder }}
+  - name: Terraform Init
+    run: terraform init -input=false
+    working-directory: ${{ matrix.folder }}
+
+  - name: Terraform Validate
+    run: terraform validate
+    working-directory: ${{ matrix.folder }}
+
+  - name: Terraform Plan
+    run: terraform plan -input=false -var-file="dev.tfvars" || terraform plan -input=false
+    working-directory: ${{ matrix.folder }}
+
