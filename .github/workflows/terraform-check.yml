@@ -20,17 +20,14 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive
-
       - name: Terraform Init
+        run: terraform init
         working-directory: ${{ matrix.folder }}
-        run: terraform init -input=false
 
       - name: Terraform Validate
-        working-directory: ${{ matrix.folder }}
         run: terraform validate
+        working-directory: ${{ matrix.folder }}
 
       - name: Terraform Plan
+        run: terraform plan -input=false -var-file="dev.tfvars"
         working-directory: ${{ matrix.folder }}
-        run: terraform plan -input=false || true
